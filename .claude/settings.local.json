@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(ecc:plan)",
+      "Bash(npx prisma *)",
+      "Bash(npm install *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(npx create-next-app@latest *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Read(//tmp/**)",
+      "Bash(pkill -f \"next dev\")",
+      "Read(//private/tmp/**)",
+      "Bash(npx jest *)",
+      "Bash(node *)",
+      "Bash(npm test *)",
+      "Bash(git -C /Users/alinazarov/Desktop/Neuron stash)",
+      "Bash(git -C /Users/alinazarov/Desktop/Neuron stash pop)",
+      "Bash(echo \"Dev server starting with PID $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(echo \"Started PID $!\")",
+      "Bash(/usr/bin/curl -s \"http://localhost:3000/dashboard\")",
+      "Bash(echo \"PID $!\")",
+      "Bash(/usr/bin/curl *)",
+      "Bash(openssl rand *)",
+      "Bash(xargs cat)",
+      "Bash(curl *)",
+      "Bash(npx tsx *)"
+    ]
+  }
+}

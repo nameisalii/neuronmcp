@@ -1,0 +1,119 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String     @id @default(cuid())
+  clerkId         String     @unique
+  email           String     @unique
+  name            String?
+  workspaceType        String     @default("PERSONAL")
+  week1ReportSent      Boolean    @default(false)
+  week1SentAt          DateTime?
+  onboardingCompleted  Boolean    @default(false)
+  createdAt            DateTime   @default(now())
+  workspace       Workspace?
+}
+
+model Workspace {
+  id             String          @id @default(cuid())
+  name           String
+  ownerId        String          @unique
+  owner          User            @relation(fields: [ownerId], references: [id])
+  knowledgeItems KnowledgeItem[]
+  decisions      Decision[]
+  ideas          Idea[]
+  clients        Client[]
+  integrations   Integration[]
+  createdAt      DateTime        @default(now())
+}
+
+model KnowledgeItem {
+  id           String    @id @default(cuid())
+  workspaceId  String
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  content      String
+  category     String
+  source       String
+  sourceUrl    String?
+  owner        String?
+  verified     Boolean   @default(false)
+  verifiedAt   DateTime?
+  verifiedBy   String?
+  confidence   Float     @default(0.8)
+  embeddingId  String?
+  frozen       Boolean   @default(false)
+  conflictNote String?
+  reason       String?
+  alternatives String?
+  contentHash  String?
+  clientId     String?
+  client       Client?   @relation(fields: [clientId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([workspaceId, contentHash])
+  @@index([workspaceId, category])
+  @@index([workspaceId, verified])
+}
+
+model Decision {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  title       String
+  decision    String
+  alternatives String?
+  reason      String?
+  source      String
+  sourceUrl   String?
+  madeBy      String?
+  madeAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([workspaceId])
+}
+
+model Idea {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  content     String
+  source      String
+  relatedIds  String[]
+  actionedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([workspaceId])
+}
+
+model Client {
+  id             String          @id @default(cuid())
+  workspaceId    String
+  workspace      Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name           String
+  knowledgeItems KnowledgeItem[]
+  createdAt      DateTime        @default(now())
+}
+
+model Integration {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  type        String
+  accessToken String
+  botUserId   String?
+  teamId      String?
+  teamName    String?
+  channels    String[]
+  metadata    Json?
+  lastSyncAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([workspaceId, type])
+}
